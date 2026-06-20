@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <!-- Настройки для iPhone (PWA) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="СМТ Монитор">
@@ -60,15 +61,21 @@
         
         input, select { padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 3px; background: var(--container-bg); color: var(--text-color); font-size: 0.9rem; min-height: 34px; box-sizing: border-box;}
         
-        /* ТАБЛИЦЫ */
+        /* УНИВЕРСАЛЬНЫЕ КЛАССЫ СКРЫТИЯ */
+        .show-mobile { display: none; }
+        
+        /* ТАБЛИЦЫ - ПК ВЕРСИЯ */
         .table-responsive { width: 100%; overflow-x: auto; background: var(--container-bg); border-radius: 4px; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch;}
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; word-break: break-word;}
+        th, td { padding: 6px 8px; border-bottom: 1px solid var(--border-color); vertical-align: middle; word-break: break-word;}
         th { background-color: var(--header-bg); color: white; font-weight: 500; white-space: nowrap;}
         tr:hover { background-color: var(--table-hover); }
         
-        .group-header { background-color: var(--border-color) !important; font-weight: bold; font-size: 0.85rem; padding: 6px 8px;}
-        .text-right { text-align: right; }
+        /* ЦЕНТРОВКА ЦИФР ВО ВСЕХ ТАБЛИЦАХ */
+        th:not(:first-child), td:not(:first-child) { text-align: center; }
+        th:first-child, td:first-child { text-align: left; }
+        tr.group-header td { text-align: left !important; background-color: var(--border-color) !important; font-weight: bold; font-size: 0.85rem;}
+        
         .negative-stock { color: var(--danger-color); font-weight: bold; }
         
         .installer-stock-list { margin: 0; padding: 0; list-style: none; font-size: 0.8rem;}
@@ -83,7 +90,8 @@
         .movement-group summary::marker { color: var(--primary-color); font-size: 1.1em;} 
         .movement-group summary::-webkit-details-marker { color: var(--primary-color); }
         .movement-details-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; border-top: 1px solid var(--border-color); }
-        .movement-details-table th, .movement-details-table td { padding: 6px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .movement-details-table th, .movement-details-table td { padding: 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .movement-details-table th:first-child, .movement-details-table td:first-child { text-align: left; }
         .movement-details-table th { background: rgba(0,0,0,0.03); color: var(--text-color); font-weight: 600; }
         .movement-badge { padding: 2px 4px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; display: inline-block; text-align: center; line-height: 1.1;}
 
@@ -103,7 +111,7 @@
         
         #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:var(--header-bg); z-index:9999; display:flex; flex-direction: column; justify-content:center; align-items:center; color:white; font-size:1rem; font-weight:bold; }
         
-        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+        /* ЖЕСТКАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (В одну строчку) */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 0; height: auto; padding-bottom: 4px; }
             .logo, .header-dummy { width: 100%; justify-content: center; margin-top: 2px; margin-bottom: 6px; font-size: 1.05rem;}
@@ -114,14 +122,29 @@
             .controls { padding: 6px;}
             .filters { flex-direction: column; gap: 4px; }
             .filters input, .filters select { width: 100%; }
-            .btn { padding: 6px 8px; font-size: 0.85rem; }
-            .btn-small { padding: 4px; font-size: 0.75rem; }
-            
-            table { font-size: 0.75rem; }
-            th { white-space: normal !important; word-wrap: break-word; line-height: 1.1; font-size: 0.7rem; }
-            th, td { padding: 4px 2px; }
-            
             .hide-mobile { display: none !important; }
+            .show-mobile { display: inline-block !important; }
+            
+            /* ФОРМАТИРОВАНИЕ ТАБЛИЦ */
+            table { font-size: 0.75rem; table-layout: fixed; width: 100%; }
+            th, td { 
+                white-space: nowrap !important; /* Строгий запрет на перенос */
+                overflow: hidden !important; 
+                text-overflow: ellipsis !important; /* Добавляем "..." если текст длинный */
+                padding: 6px 2px !important; 
+            }
+            
+            /* ПРОПОРЦИИ ДЛЯ 5 КОЛОНОК (ОСТАТКИ) */
+            .materials-table th:first-child, .materials-table td:first-child { width: 44%; padding-left: 6px !important; }
+            .materials-table th:nth-child(2), .materials-table td:nth-child(2) { width: 14%; }
+            .materials-table th:nth-child(3), .materials-table td:nth-child(3) { width: 14%; }
+            .materials-table th:nth-child(4), .materials-table td:nth-child(4) { width: 14%; }
+            .materials-table th:nth-child(5), .materials-table td:nth-child(5) { width: 14%; }
+            
+            /* Исключения, чтобы не обрезались важные элементы внутри таблиц */
+            details summary { white-space: normal !important; overflow: visible !important; }
+            .installer-stock-list li { white-space: normal !important; overflow: visible !important; }
+            
             .modal { width: 98%; padding: 12px; }
         }
     </style>
@@ -140,7 +163,7 @@
 
     <header>
         <div class="logo">
-            СМТ <span class="version-badge">Монитор v2.7</span>
+            СМТ <span class="version-badge">Монитор v2.8</span>
             <div class="status-indicator"><div class="dot" id="connDot"></div><span id="connText">...</span></div>
         </div>
         <nav>
@@ -153,19 +176,20 @@
     </header>
 
     <main>
+        <!-- ВКЛАДКА ОСТАТКИ -->
         <section id="materials" class="tab-content active">
             <div class="controls">
                 <div class="filters"><input type="text" id="searchMaterial" placeholder="Поиск по названию..." onkeyup="renderMaterials()"></div>
             </div>
             <div class="table-responsive">
-                <table>
+                <table class="materials-table">
                     <thead>
                         <tr>
                             <th>Материал</th>
-                            <th class="text-right">Склад</th>
-                            <th class="text-right">На руках</th>
-                            <th class="text-right">Всего</th>
-                            <th class="text-right">Установлено</th>
+                            <th><span class="hide-mobile">Склад</span><span class="show-mobile" title="Склад">Скл</span></th>
+                            <th><span class="hide-mobile">На руках</span><span class="show-mobile" title="На руках">Руки</span></th>
+                            <th><span class="hide-mobile">Всего</span><span class="show-mobile" title="Всего">Все</span></th>
+                            <th><span class="hide-mobile">Установлено</span><span class="show-mobile" title="Установлено">Уст</span></th>
                         </tr>
                     </thead>
                     <tbody id="materialsTableBody"></tbody>
@@ -173,17 +197,23 @@
             </div>
         </section>
 
+        <!-- ВКЛАДКА МОНТАЖНИКИ -->
         <section id="installers" class="tab-content">
             <div class="table-responsive">
                 <table>
                     <thead>
-                        <tr><th>Монтажник</th><th>№ телефона</th><th>На руках</th></tr>
+                        <tr>
+                            <th style="width: 44%;">Монтажник</th>
+                            <th style="width: 28%;">№ телефона</th>
+                            <th style="width: 28%;">На руках</th>
+                        </tr>
                     </thead>
                     <tbody id="installersListBody"></tbody>
                 </table>
             </div>
         </section>
 
+        <!-- ВКЛАДКА ДВИЖЕНИЕ -->
         <section id="movements" class="tab-content">
             <div class="controls">
                 <div class="filters">
@@ -198,6 +228,7 @@
             <div id="movementsContainer"></div>
         </section>
 
+        <!-- ВКЛАДКА ОТЧЕТЫ -->
         <section id="reports" class="tab-content">
             <div class="controls">
                 <div class="filters">
@@ -208,7 +239,11 @@
             <div class="table-responsive">
                 <table>
                     <thead>
-                        <tr><th>Монтажник</th><th class="text-right">Счетчиков</th><th class="text-right">Детализация</th></tr>
+                        <tr>
+                            <th style="width: 50%;">Монтажник</th>
+                            <th style="width: 25%;">Счетчиков</th>
+                            <th style="width: 25%;">Детализация</th>
+                        </tr>
                     </thead>
                     <tbody id="reportsTableBody"></tbody>
                 </table>
@@ -220,6 +255,7 @@
         <button class="footer-btn" onclick="toggleTheme()">🌓 Сменить тему</button>
     </footer>
 
+    <!-- Модальное окно только для просмотра деталей -->
     <div class="modal-overlay" id="installerDetailsModal">
         <div class="modal" style="max-width: 450px;">
             <div class="modal-header"><span id="installerDetailsTitle" style="font-size:1rem; padding-right:10px;">Детализация</span><button class="modal-close" onclick="closeModal('installerDetailsModal')">&times;</button></div>
@@ -253,7 +289,7 @@
             else { dot.classList.remove('online'); text.innerText = 'Офлайн'; text.style.color = 'var(--text-muted)'; }
         });
 
-        // ТОЛЬКО ЧТЕНИЕ - Мы слушаем базу, но не записываем в нее.
+        // ТОЛЬКО ЧТЕНИЕ
         dbRef.on('value', snap => {
             document.getElementById('loadingOverlay').style.display = 'none';
             const data = snap.val();
@@ -324,11 +360,9 @@
             let displayList = getSortedMaterials();
             if (search) displayList = displayList.filter(m => m.name.toLowerCase().includes(search));
 
-            // СТРОГИЙ ФИЛЬТР: Подсчет установленных позиций (ТОЛЬКО СЧЕТЧИКИ)
             let installedTotals = {};
             db.reports.forEach(r => {
                 let m = db.materials.find(x => x.id === r.materialId);
-                // Защита от мусорных данных: берем в расчет только материалы с catId === 1
                 if (m && analyzeMaterial(m.name).catId === 1) {
                     installedTotals[r.materialId] = safeNum((installedTotals[r.materialId] || 0) + safeNum(r.qty));
                 }
@@ -355,7 +389,6 @@
                 let instHTML = '<span style="color:var(--text-muted)">0</span>';
                 if (totalInstStock > 0) instHTML = `<span class="clickable-total" onclick="showInstallerDetails('${m.id}')">${fmtQty(totalInstStock)} шт</span>`;
                 
-                // Рендер столбца Установлено: показываем цифру только для счетчиков, для КМЧ - пустота
                 let totalInstalledHTML = '';
                 if (m.meta.catId === 1) {
                     let totalInstalled = installedTotals[m.id] || 0;
@@ -363,26 +396,25 @@
                     catTotals[m.meta.catName].installed = safeNum(catTotals[m.meta.catName].installed + totalInstalled);
                 }
                 
+                // Добавляем атрибут title, чтобы можно было прочитать длинное название при удержании на телефоне
                 html += `<tr>
-                    <td>${m.name}</td>
-                    <td class="text-right ${currentStock < 0 ? 'negative-stock' : ''}"><b>${fmtQty(currentStock)}</b></td>
-                    <td class="text-right">${instHTML}</td>
-                    <td class="text-right" style="color:var(--info-color); font-weight:bold;">${fmtQty(totalAll)}</td>
-                    <td class="text-right">${totalInstalledHTML}</td>
+                    <td title="${m.name}">${m.name}</td>
+                    <td class="${currentStock < 0 ? 'negative-stock' : ''}"><b>${fmtQty(currentStock)}</b></td>
+                    <td>${instHTML}</td>
+                    <td style="color:var(--info-color); font-weight:bold;">${fmtQty(totalAll)}</td>
+                    <td>${totalInstalledHTML}</td>
                 </tr>`;
             });
 
             if (displayList.length > 0) {
                 let sortedCats = Object.keys(catTotals).sort();
                 sortedCats.forEach(cat => {
-                    // Выводим итоги, только если есть что показать
                     if (catTotals[cat].all > 0 || catTotals[cat].installed > 0) {
-                        // Для КМЧ ячейка "Установлено" в итогах будет пустой
-                        let installedTotalHTML = catTotals[cat].installed > 0 ? `<td class="text-right" style="color:#00e676;">${fmtQty(catTotals[cat].installed)}</td>` : `<td></td>`;
+                        let installedTotalHTML = catTotals[cat].installed > 0 ? `<td style="color:#00e676;">${fmtQty(catTotals[cat].installed)}</td>` : `<td></td>`;
                         
                         html += `<tr style="background:var(--header-bg); color:white; font-weight:bold; border-bottom: 1px solid rgba(255,255,255,0.2);">
-                            <td colspan="3" style="text-align:right;">ИТОГО ${cat}:</td>
-                            <td class="text-right">${fmtQty(catTotals[cat].all)}</td>
+                            <td colspan="3" style="text-align:right; padding-right:8px;">ИТОГО ${cat}:</td>
+                            <td>${fmtQty(catTotals[cat].all)}</td>
                             ${installedTotalHTML}
                         </tr>`;
                     }
@@ -433,8 +465,8 @@
                     }
                 }
                 return `<tr>
-                    <td style="vertical-align:top;"><b>${inst.name}</b></td>
-                    <td style="vertical-align:top; font-size:0.8rem;">${inst.phone||'-'}</td>
+                    <td title="${inst.name}" style="vertical-align:top;"><b>${inst.name}</b></td>
+                    <td title="${inst.phone||'-'}" style="vertical-align:top; font-size:0.8rem;">${inst.phone||'-'}</td>
                     <td style="vertical-align:top; padding:4px 2px;">${itemsHtml}</td>
                 </tr>`;
             }).join('');
@@ -476,16 +508,16 @@
                     </summary>
                     <div style="overflow-x:auto;">
                         <table class="movement-details-table">
-                            <thead><tr><th>Время</th><th>Материал</th><th>Операция</th><th class="text-right">Кол-во</th><th class="hide-mobile">Комментарий</th></tr></thead>
+                            <thead><tr><th>Время</th><th>Материал</th><th>Операция</th><th>Кол-во</th><th class="hide-mobile">Комментарий</th></tr></thead>
                             <tbody>
                                 ${g.movs.map(m => {
                                     let badgeStyle = m.type.includes('Установка') ? 'background:var(--success-color);color:white;' : 'background:rgba(0,0,0,0.06); border: 1px solid var(--border-color);';
                                     let time = new Date(m.date).toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
                                     return `<tr>
                                         <td>${time}</td>
-                                        <td><b style="font-size:0.75rem;">${getMaterialName(m.materialId)}</b></td>
+                                        <td title="${getMaterialName(m.materialId)}"><b style="font-size:0.75rem;">${getMaterialName(m.materialId)}</b></td>
                                         <td><span class="movement-badge" style="${badgeStyle}">${m.type}</span></td>
-                                        <td class="text-right"><b style="font-size:0.9rem;">${fmtQty(m.qty)}</b></td>
+                                        <td><b style="font-size:0.9rem;">${fmtQty(m.qty)}</b></td>
                                         <td class="hide-mobile">${m.comment||'-'}</td>
                                     </tr>`;
                                 }).join('')}
@@ -523,9 +555,9 @@
             for (let id in stats) {
                 if (stats[id].count > 0) {
                     html += `<tr>
-                        <td><b>${stats[id].name}</b></td>
-                        <td class="text-right"><b style="color:var(--success-color); font-size:1.1rem;">${fmtQty(stats[id].count)}</b> шт</td>
-                        <td class="text-right">
+                        <td title="${stats[id].name}"><b>${stats[id].name}</b></td>
+                        <td><b style="color:var(--success-color); font-size:1.1rem;">${fmtQty(stats[id].count)}</b> шт</td>
+                        <td>
                             <button class="btn btn-primary btn-small" onclick="showReportDetails('${stats[id].name}', '${id}', '${monthVal}')">Детализация</button>
                         </td>
                     </tr>`;
